@@ -104,6 +104,7 @@ const emit = defineEmits<{
 	'selection:end': [position: XYPosition];
 	'open:sub-workflow': [nodeId: string];
 	'start-chat': [];
+	'extract-workflow': [ids: string[]];
 }>();
 
 const props = withDefaults(
@@ -681,6 +682,8 @@ async function onContextMenuAction(action: ContextMenuAction, nodeIds: string[])
 			return props.eventBus.emit('nodes:action', { ids: nodeIds, action: 'update:sticky:color' });
 		case 'tidy_up':
 			return await onTidyUp({ source: 'context-menu' });
+		case 'extract_sub_workflow':
+			return emit('extract-workflow', nodeIds);
 		case 'open_sub_workflow': {
 			return emit('open:sub-workflow', nodeIds[0]);
 		}

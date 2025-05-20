@@ -119,7 +119,7 @@ import { useClearExecutionButtonVisible } from '@/composables/useClearExecutionB
 import { useWorkflowSaving } from '@/composables/useWorkflowSaving';
 import { useBuilderStore } from '@/stores/builder.store';
 import { useFoldersStore } from '@/stores/folders.store';
-import KeyboardShortcutTooltip from '@/components/KeyboardShortcutTooltip.vue';
+import { useWorkflowExtraction } from '@/composables/useWorkflowExtraction';
 import { useAgentRequestStore } from '@n8n/stores/useAgentRequestStore';
 import { needsAgentInput } from '@/utils/nodes/nodeTransforms';
 import { useLogsStore } from '@/stores/logs.store';
@@ -228,6 +228,7 @@ const {
 	lastClickPosition,
 	startChat,
 } = useCanvasOperations({ router });
+const { extractWorkflow } = useWorkflowExtraction();
 const { applyExecutionData } = useExecutionDebugging();
 useClipboard({ onPaste: onClipboardPaste });
 
@@ -615,6 +616,10 @@ const allTriggerNodesDisabled = computed(() => {
 
 function onTidyUp(event: CanvasLayoutEvent) {
 	tidyUp(event);
+}
+
+function onExtractWorkflow(nodeIds: string[]) {
+	void extractWorkflow(nodeIds);
 }
 
 function onUpdateNodesPosition(events: CanvasNodeMoveEvent[]) {
@@ -1959,6 +1964,7 @@ onBeforeUnmount(() => {
 		@selection:end="onSelectionEnd"
 		@drag-and-drop="onDragAndDrop"
 		@tidy-up="onTidyUp"
+		@extract-workflow="onExtractWorkflow"
 		@start-chat="startChat()"
 	>
 		<Suspense>
